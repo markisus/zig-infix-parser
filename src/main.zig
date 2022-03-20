@@ -117,6 +117,10 @@ fn CompileExpression(comptime expression: []const u8) type {
         pushAstNode(&operator_stack, &ast_stack);
     }
 
+    if (ast_stack.len != 1) {
+        @compileLog("malformed expression");
+    }
+
     return ast_stack.peek();
 }
 
@@ -277,3 +281,9 @@ test "parse2" {
     const E = CompileExpression("2*3");
     try std.testing.expect(E.eval(.{}) == (2 * 3));
 }
+
+// Malformed expression should trigger compile error
+// test "parse3" {
+//     const E = CompileExpression("2*3  8");
+//     try std.testing.expect(E.eval(.{}) == (2 * 3));
+// }
